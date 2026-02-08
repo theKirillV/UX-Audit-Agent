@@ -15,16 +15,16 @@ import { ChevronDown, AlertTriangle, AlertCircle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function scoreColorClass(score: number) {
-  if (score >= 80) return "bg-green-500";
-  if (score >= 50) return "bg-yellow-500";
-  return "bg-red-500";
+  if (score >= 80) return "bg-green-600";
+  if (score >= 50) return "bg-amber-600";
+  return "bg-red-600";
 }
 
 function severityIcon(severity: string) {
   switch (severity) {
-    case "critical": return <AlertCircle className="h-4 w-4 text-red-500" />;
-    case "major": return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-    default: return <Info className="h-4 w-4 text-blue-500" />;
+    case "critical": return <AlertCircle className="h-4 w-4 text-red-600" />;
+    case "major": return <AlertTriangle className="h-4 w-4 text-amber-600" />;
+    default: return <Info className="h-4 w-4 text-blue-600" />;
   }
 }
 
@@ -38,8 +38,8 @@ function severityBadgeVariant(severity: string) {
 
 function severityMarkerColor(severity: string) {
   switch (severity) {
-    case "critical": return "bg-red-500 text-white";
-    case "major": return "bg-yellow-500 text-white";
+    case "critical": return "bg-red-600 text-white";
+    case "major": return "bg-amber-500 text-black";
     default: return "bg-blue-500 text-white";
   }
 }
@@ -81,9 +81,9 @@ export function AuditResults({ result, imageUrl }: AuditResultsProps) {
   }, [selectedIssue]);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      {/* Screenshot panel */}
-      <div>
+    <div className="flex gap-6">
+      {/* Screenshot panel — 70% width */}
+      <div className="w-[70%] shrink-0">
         <ScreenshotViewer
           imageUrl={imageUrl}
           issues={result.issues}
@@ -92,37 +92,34 @@ export function AuditResults({ result, imageUrl }: AuditResultsProps) {
         />
       </div>
 
-      {/* Results panel */}
-      <ScrollArea className="max-h-[80vh]">
+      {/* Results panel — 30% width */}
+      <ScrollArea className="h-[calc(100vh-8rem)] w-[30%]">
         <div className="space-y-4 pr-3">
           {/* Score */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div
               className={cn(
-                "flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold text-white",
+                "flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white",
                 scoreColorClass(result.score)
               )}
             >
               {result.score}
             </div>
-            <div>
-              <h3 className="text-lg font-semibold">Accessibility Score</h3>
-              <p className="text-sm text-muted-foreground">{result.summary}</p>
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold">Accessibility Score</h3>
+              <p className="text-xs text-muted-foreground">{result.summary}</p>
             </div>
           </div>
 
-          {/* Issue counts */}
-          <div className="flex gap-2">
-            {criticalIssues.length > 0 && (
-              <Badge variant="destructive">{criticalIssues.length} Critical</Badge>
-            )}
-            {majorIssues.length > 0 && (
-              <Badge variant="secondary">{majorIssues.length} Major</Badge>
-            )}
-            {minorIssues.length > 0 && (
-              <Badge variant="outline">{minorIssues.length} Minor</Badge>
-            )}
-          </div>
+          {/* Issue counts — plain text, not interactive */}
+          <p className="text-xs text-muted-foreground">
+            {[
+              criticalIssues.length > 0 && `${criticalIssues.length} critical`,
+              majorIssues.length > 0 && `${majorIssues.length} major`,
+              minorIssues.length > 0 && `${minorIssues.length} minor`,
+            ].filter(Boolean).join(" · ")}
+            {" · "}{result.issues.length} total
+          </p>
 
           {/* Grouped issues */}
           {sections.map((section) => (
@@ -145,8 +142,8 @@ export function AuditResults({ result, imageUrl }: AuditResultsProps) {
                           else cardRefs.current.delete(originalIndex);
                         }}
                         className={cn(
-                          "cursor-pointer transition-shadow hover:shadow-md",
-                          selectedIssue === originalIndex && "ring-2 ring-primary"
+                          "cursor-pointer transition-colors hover:bg-accent/50",
+                          selectedIssue === originalIndex && "border-primary bg-accent/30"
                         )}
                         onClick={() => setSelectedIssue(originalIndex)}
                       >

@@ -88,7 +88,7 @@ function AccessibilityAuditContent() {
 
   if (result && imageUrls[0]) {
     return (
-      <div className="mx-auto max-w-6xl space-y-4">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Accessibility Audit Results</h1>
           <Button

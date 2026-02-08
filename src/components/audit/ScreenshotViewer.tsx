@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { AccessibilityIssue } from "@/lib/prompts/accessibility";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 interface ScreenshotViewerProps {
   imageUrl: string;
@@ -14,9 +13,9 @@ interface ScreenshotViewerProps {
 
 function severityMarkerColor(severity: string) {
   switch (severity) {
-    case "critical": return "bg-red-500 border-red-700";
-    case "major": return "bg-yellow-500 border-yellow-700";
-    default: return "bg-blue-500 border-blue-700";
+    case "critical": return "bg-red-600 border-red-800 text-white";
+    case "major": return "bg-amber-500 border-amber-700 text-black";
+    default: return "bg-blue-500 border-blue-700 text-white";
   }
 }
 
@@ -77,16 +76,16 @@ export function ScreenshotViewer({
       <div
         ref={scrollContainerRef}
         className="overflow-auto rounded-lg border bg-muted/30"
-        style={{ maxHeight: "70vh" }}
       >
-        <div className="relative inline-block" style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}>
-          <Image
+        <div
+          className="relative"
+          style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={imageUrl}
             alt="Screenshot being audited"
-            width={1200}
-            height={800}
-            className="block max-w-none"
-            unoptimized
+            className="block max-w-full h-auto"
           />
           {issues.map((issue, i) => (
             <button
@@ -97,7 +96,7 @@ export function ScreenshotViewer({
               }}
               onClick={() => onSelectIssue(i)}
               className={cn(
-                "absolute flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 text-[10px] font-bold text-white shadow-md transition-transform hover:scale-125",
+                "absolute flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 text-xs font-bold shadow-lg transition-transform hover:scale-125",
                 severityMarkerColor(issue.severity),
                 selectedIssueIndex === i && "ring-2 ring-white ring-offset-2 ring-offset-background scale-125"
               )}
